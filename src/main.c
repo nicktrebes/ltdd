@@ -1,5 +1,7 @@
+/*
 MIT License
 
+main.c
 Copyright (c) 2020 Nick Trebes
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,3 +21,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+#include <ltdd.h>
+
+int main(int argc, char **argv) {
+	char **srcv = NULL, **tstv = NULL;
+	int srcc = 0, tstc = 0;
+	if (ltdd_util_parse_args(argc, argv, &srcc, &srcv, &tstc, &tstv)) {
+		return 1;
+	}
+
+	return 0;
+}
