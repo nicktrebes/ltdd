@@ -34,5 +34,8 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	lua_State *L = ltdd_lua_open_libs();
+
+	lua_close(L);
 	return 0;
 }

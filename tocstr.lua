@@ -27,23 +27,24 @@ file:write("\n\nconst char *")
 file:write(cname)
 file:write(" =")
 
-local len = #input
-for i = 1, len, 16 do
-	file:write("\n\t\"")
-	for j = 0, 15 do
-		file:write(string.format("\\x%02x", string.byte(input, i+j)))
+local function splitToHex16(s)
+	local t = {}
+	for i = 1, #s, 16 do
+		t[#t + 1] = string.gsub(s:sub(i, i + 15), ".", function(c)
+			return string.format("\\x%02x", string.byte(c))
+		end)
 	end
-	file:write("\"")
+	return t
 end
 
-if len % 16 ~= 0 then
-	file:write("\n\t\"")
-	local r = len % 16
-	local i = len - r
-	for j = 1, r - 1 do
-		file:write(string.format("\\x%02x", string.byte(input, i+j)))
+if #input == 0 then
+	file:write("\"\"")
+else
+	for i, line in ipairs(splitToHex16(input)) do
+		file:write("\n\t\"")
+		file:write(line)
+		file:write("\"")
 	end
-	file:write("\"")
 end
 
 file:write(";\n")

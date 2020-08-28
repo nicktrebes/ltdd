@@ -4,6 +4,7 @@
 #include <cgreen/cgreen.h>
 #include <ltdd.h>
 
-TestSuite *test_util();
+TestSuite *test_lua(void);
+TestSuite *test_util(void);
 
 #endif /* LTDD_TEST_H */

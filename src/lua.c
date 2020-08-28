@@ -1,10 +1,7 @@
-#ifndef LTDD_H
-#define LTDD_H
-
 /*
 MIT License
 
-ltdd.h
+lua.c
 Copyright (c) 2020 Nick Trebes
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,15 +23,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <lua5.3/lua.h>
-#include <lua5.3/lualib.h>
-#include <lua5.3/lauxlib.h>
+#include <stdlib.h>
+#include <cstr.h>
+#include <ltdd.h>
 
-lua_State *ltdd_lua_open_libs(void);
-int ltdd_util_list_dir(const char *path, int *fc, char ***fv);
-int ltdd_util_parse_args(
-	int argc, char **argv,
-	int *srcc, char ***srcv,
-	int *tstc, char ***tstv);
+static void *ltdd_alloc(void *ud, void *ptr, size_t oz, size_t nz);
 
-#endif /* LTDD_H */
+lua_State *ltdd_lua_open_libs(void) {
+	lua_State *L = lua_newstate(ltdd_alloc, NULL);
+	luaL_openlibs(L);
+	luaL_dostring(L, ltdd_api);
+	return L;
+}
+
+static void *ltdd_alloc(void *ud, void *ptr, size_t oz, size_t nz) {
+	(void)ud;
+	(void)oz;
+
+	return realloc(ptr, nz);
+}

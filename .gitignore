@@ -1,5 +1,6 @@
-# Ignore bin/
+# Ignore bin/ and build/
 bin/
+build/
 
 # Ignore Eclipse
 .cproject

@@ -113,7 +113,7 @@ Ensure(Util, parse_args_throws_on_invalid_switch) {
 	assert_that(ltdd_util_parse_args(4, argv, &srcc, &srcv, &tstc, &tstv), is_not_equal_to(0));
 }
 
-TestSuite *test_util() {
+TestSuite *test_util(void) {
 	TestSuite *suite = create_test_suite();
 
 	add_test_with_context(suite, Util, list_dir_throws_on_invalid_dir);
