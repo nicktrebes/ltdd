@@ -5,16 +5,11 @@ end
 
 local header, cname, path_in, path_out = table.unpack(args)
 
-local file = io.open(path_in, "r")
-local input = file:read("a")
-file:close()
-
-local file = io.open(path_in, "r")
-if not file then
-	error("failed to open " .. path_in)
+local prg, err = loadfile(path_in)
+if not prg then
+	error(err)
 end
-local input = file:read("a")
-file:close()
+local input = string.dump(prg)
 
 local file = io.open(path_out, "w")
 if not file then
