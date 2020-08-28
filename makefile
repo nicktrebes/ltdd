@@ -8,25 +8,31 @@ LLIBS = -llua
 
 INSTALL_PATH = /usr/bin
 
-.PHONY: all bin clean install test
+.PHONY: all build clean install test
+
+BUILD_DIR = build
+TOCSTR = $(LUA) tocstr.lua
 
 TARGET_SOURCES = $(filter-out src/main.c, $(wildcard src/*.c))
-TARGET_OBJECTS = $(addprefix bin/, $(TARGET_SOURCES:.c=.o))
-TARGET = bin/ltdd
+TARGET_OBJECTS = $(addprefix $(BUILD_DIR)/, $(TARGET_SOURCES:.c=.o))
+TARGET = $(BUILD_DIR)/ltdd
 
 TEST_SOURCES = $(wildcard test/*.c)
-TEST_OBJECTS = $(addprefix bin/, $(TEST_SOURCES:.c=.o))
-TEST_TARGET = bin/ltdd_test
+TEST_OBJECTS = $(addprefix $(BUILD_DIR)/, $(TEST_SOURCES:.c=.o))
+TEST_TARGET = $(BUILD_DIR)/ltdd_test
 
-all: TARGET_OBJECTS += bin/main.o
+TEST_CSTR_LUA = $(wildcard test/lua/*.lua)
+TEST_CSTR_SOURCES = $(addprefix $(BUILD_DIR)/, $(TEST_CSTR_LUA:.lua=.c))
+TEST_CSTR_OBJECTS = $(TEST_CSTR_SOURCES:.c=.o)
+
 all: $(TARGET)
 
-bin:
-	$(MKDIR) bin/src
-	$(MKDIR) bin/test
+build:
+	$(MKDIR) $(BUILD_DIR)/src
+	$(MKDIR) $(BUILD_DIR)/test/lua
 
 clean:
-	$(RM) bin
+	$(RM) $(BUILD_DIR)
 
 install:
 	$(CP) $(TARGET) $(INSTALL_PATH)/$(TARGET)
@@ -35,14 +41,20 @@ test: CFLAGS += -g
 test: LLIBS += -lcgreen
 test: $(TEST_TARGET)
 
-$(TARGET): clean bin $(TARGET_OBJECTS)
-	$(CC) -o $(TARGET) $(TARGET_OJBECTS) $(LLIBS)
+$(TARGET): clean build $(TARGET_OBJECTS) $(BUILD_DIR)/src/main.o
+	$(CC) -o $(TARGET) $(TARGET_OBJECTS) $(BUILD_DIR)/src/main.o $(LLIBS)
 
-$(TEST_TARGET): clean bin $(TARGET_OBJECTS) $(TEST_OBJECTS)
-	$(CC) -o $(TEST_TARGET) $(TARGET_OBJECTS) $(TEST_OBJECTS) $(LLIBS)
+$(TEST_TARGET): clean build $(TARGET_OBJECTS) $(TEST_OBJECTS) $(TEST_CSTR_OBJECTS)
+	$(CC) -o $(TEST_TARGET) $(TARGET_OBJECTS) $(TEST_OBJECTS) $(TEST_CSTR_OBJECTS) $(LLIBS)
 
-bin/src/%.o:
+$(BUILD_DIR)/src/%.o:
 	$(CC) -o $@ $(CFLAGS) -c src/$(basename $(notdir $@)).c
 
-bin/test/%.o:
+$(BUILD_DIR)/test/lua/%.c:
+	$(TOCSTR) \"test/cstr.h\" $(basename $(notdir $@)) /test/lua/$(basename $(notdir $@)).lua $(BUILD_DIR)/test/lua/$(basename $(notdir $@)).c
+
+$(BUILD_DIR)/test/lua/%.o:
+	$(CC) -o $@ $(CFLAGS) -c $(BUILD_DIR)/test/lua/$(basename $(notdir $@)).c
+
+$(BUILD_DIR)/test/%.o:
 	$(CC) -o $@ $(CFLAGS) -c test/$(basename $(notdir $@)).c

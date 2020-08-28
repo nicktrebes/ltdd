@@ -30,9 +30,10 @@ SOFTWARE.
 #include <lua5.3/lualib.h>
 #include <lua5.3/lauxlib.h>
 
+int ltdd_util_list_dir(const char *path, int *fc, char ***fv);
 int ltdd_util_parse_args(
-	int argc, const char **argv,
-	int* srcc, char ***srcv,
-	int* tstc, char ***tstv);
+	int argc, char **argv,
+	int *srcc, char ***srcv,
+	int *tstc, char ***tstv);
 
 #endif /* LTDD_H */
