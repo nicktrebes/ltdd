@@ -31,6 +31,7 @@ SOFTWARE.
 #include <lua5.3/lauxlib.h>
 
 lua_State *ltdd_lua_open_libs(void);
+void ltdd_lua_open_ltdd(lua_State *L);
 int ltdd_util_list_dir(const char *path, int *fc, char ***fv);
 int ltdd_util_parse_args(
 	int argc, char **argv,
