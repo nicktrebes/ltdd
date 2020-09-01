@@ -44,6 +44,7 @@ static int ltdd_is_equal_to(lua_State *L);
 static int ltdd_is_not_equal_to(lua_State *L);
 static int ltdd_is_greater_than(lua_State* L);
 static int ltdd_is_less_than(lua_State* L);
+static int ltdd_is_of_type(lua_State *L);
 static int ltdd_is_nil(lua_State *L);
 static int ltdd_is_not_nil(lua_State *L);
 static int ltdd_is_false(lua_State *L);
@@ -58,6 +59,7 @@ static const struct luaL_Reg lib_ltdd[] = {
 	{"is_not_equal_to", ltdd_is_not_equal_to},
 	{"is_greater_than", ltdd_is_greater_than},
 	{"is_less_than", ltdd_is_less_than},
+	{"is_of_type", ltdd_is_of_type},
 	{"is_nil", ltdd_is_nil},
 	{"is_not_nil", ltdd_is_not_nil},
 	{"is_false", ltdd_is_false},
@@ -150,6 +152,11 @@ static int ltdd_eval_is_less_than(lua_State* L) {
 	luaL_getmetafield(L, 1, "value");
 	lua_pushboolean(L, lua_compare(L, 2, -1, LUA_OPLT));
 	return 1;
+}
+
+static int ltdd_is_of_type(lua_State *L) {
+	// TODO
+	return 0;
 }
 
 static int ltdd_eval_is_nil(lua_State *L) {

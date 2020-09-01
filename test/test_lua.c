@@ -56,6 +56,10 @@ Ensure(Lua, open_libs_creates_ltdd_is_true) {
 	test_function_created("is_true");
 }
 
+Ensure(Lua, open_libs_creates_ltdd_is_of_type) {
+	test_function_created("is_of_type");
+}
+
 Ensure(Lua, assert_that_throws_error_on_failed_constraint) {
 	lua_State *L = ltdd_lua_open_libs();
 	lua_getglobal(L, "ltdd"); // t
@@ -298,6 +302,7 @@ TestSuite *test_lua(void) {
 	add_test_with_context(suite, Lua, open_libs_creates_ltdd_is_not_nil);
 	add_test_with_context(suite, Lua, open_libs_creates_ltdd_is_false);
 	add_test_with_context(suite, Lua, open_libs_creates_ltdd_is_true);
+	add_test_with_context(suite, Lua, open_libs_creates_ltdd_is_of_type);
 	add_test_with_context(suite, Lua, assert_that_throws_error_on_failed_constraint);
 	add_test_with_context(suite, Lua, assert_that_throws_formatted_error_string_1arg);
 	add_test_with_context(suite, Lua, assert_that_throws_formatted_error_string_2arg);
