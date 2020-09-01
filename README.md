@@ -15,3 +15,4 @@ Lua Test Driven Development
 | `ltdd.is_not_equal_to(value)` | `~= value` |
 | `ltdd.is_greater_than(value)` | `> value` |
 | `ltdd.is_less_than(value)` | `< value` |
+| `ltdd.is_of_type(value)` | `type(actual) == value` |
