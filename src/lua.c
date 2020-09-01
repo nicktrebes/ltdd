@@ -134,11 +134,13 @@ static int ltdd_eval_is_not_equal_to(lua_State *L) {
 }
 
 static int ltdd_eval_is_greater_than(lua_State* L) {
-	return 0;
+	lua_pushboolean(L, !lua_compare(L, 2, 3, LUA_OPLE));
+	return 1;
 }
 
 static int ltdd_eval_is_less_than(lua_State* L) {
-	return 0;
+	lua_pushboolean(L, lua_compare(L, 2, 3, LUA_OPLT));
+	return 1;
 }
 
 static int ltdd_eval_is_nil(lua_State *L) {
