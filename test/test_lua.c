@@ -56,6 +56,10 @@ Ensure(Lua, open_libs_creates_ltdd_is_true) {
 	test_function_created("is_true");
 }
 
+Ensure(Lua, open_libs_creates_ltdd_is_of_type) {
+	test_function_created("is_of_type");
+}
+
 Ensure(Lua, assert_that_throws_error_on_failed_constraint) {
 	lua_State *L = ltdd_lua_open_libs();
 	lua_getglobal(L, "ltdd"); // t
@@ -284,6 +288,30 @@ Ensure(Lua, is_true_evals_false_if_false) {
 	lua_close(L);
 }
 
+Ensure(Lua, is_of_type_evals_true_if_type_name_matches) {
+	lua_State *L = ltdd_lua_open_libs();
+	lua_getglobal(L, "ltdd");
+	lua_getfield(L, -1, "is_of_type");
+	lua_pushliteral(L, "number");
+	lua_pcall(L, 1, 1, 0);
+	lua_pushinteger(L, 1);
+	lua_pcall(L, 1, 1, 0);
+	assert_that(lua_toboolean(L, -1), is_equal_to(1));
+	lua_close(L);
+}
+
+Ensure(Lua, is_of_type_evals_false_if_type_name_does_not_match) {
+	lua_State *L = ltdd_lua_open_libs();
+	lua_getglobal(L, "ltdd");
+	lua_getfield(L, -1, "is_of_type");
+	lua_pushliteral(L, "number");
+	lua_pcall(L, 1, 1, 0);
+	lua_newtable(L);
+	lua_pcall(L, 1, 1, 0);
+	assert_that(lua_toboolean(L, -1), is_equal_to(0));
+	lua_close(L);
+}
+
 TestSuite *test_lua(void) {
 	TestSuite *suite = create_test_suite();
 
@@ -298,6 +326,7 @@ TestSuite *test_lua(void) {
 	add_test_with_context(suite, Lua, open_libs_creates_ltdd_is_not_nil);
 	add_test_with_context(suite, Lua, open_libs_creates_ltdd_is_false);
 	add_test_with_context(suite, Lua, open_libs_creates_ltdd_is_true);
+	add_test_with_context(suite, Lua, open_libs_creates_ltdd_is_of_type);
 	add_test_with_context(suite, Lua, assert_that_throws_error_on_failed_constraint);
 	add_test_with_context(suite, Lua, assert_that_throws_formatted_error_string_1arg);
 	add_test_with_context(suite, Lua, assert_that_throws_formatted_error_string_2arg);
@@ -318,6 +347,8 @@ TestSuite *test_lua(void) {
 	add_test_with_context(suite, Lua, is_false_evals_false_if_true);
 	add_test_with_context(suite, Lua, is_true_evals_true_if_true);
 	add_test_with_context(suite, Lua, is_true_evals_false_if_false);
+	add_test_with_context(suite, Lua, is_of_type_evals_true_if_type_name_matches);
+	add_test_with_context(suite, Lua, is_of_type_evals_false_if_type_name_does_not_match);
 
 	return suite;
 }
