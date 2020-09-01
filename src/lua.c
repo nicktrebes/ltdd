@@ -36,6 +36,7 @@ static int ltdd_eval_is_equal_to(lua_State *L);
 static int ltdd_eval_is_not_equal_to(lua_State *L);
 static int ltdd_eval_is_greater_than(lua_State* L);
 static int ltdd_eval_is_less_than(lua_State* L);
+static int ltdd_eval_is_of_type(lua_State* L);
 static int ltdd_eval_is_nil(lua_State *L);
 static int ltdd_eval_is_not_nil(lua_State *L);
 static int ltdd_eval_is_false(lua_State *L);
@@ -154,9 +155,12 @@ static int ltdd_eval_is_less_than(lua_State* L) {
 	return 1;
 }
 
-static int ltdd_is_of_type(lua_State *L) {
-	// TODO
-	return 0;
+static int ltdd_eval_is_of_type(lua_State* L) {
+	luaL_getmetafield(L, 1, "value"); // B
+	ltdd_replace_tostring(L); // s
+	lua_pushstring(L, lua_typename(L, lua_type(L, 2))); // s s
+	lua_pushboolean(L, lua_compare(L, -2, -1, LUA_OPEQ)); // s s b
+	return 1;
 }
 
 static int ltdd_eval_is_nil(lua_State *L) {
@@ -200,6 +204,12 @@ static int ltdd_is_greater_than(lua_State* L) {
 static int ltdd_is_less_than(lua_State* L) {
 	ltdd_push_constraint_with_value(L,
 		ltdd_eval_is_less_than, "[is_less_than] [");
+	return 1;
+}
+
+static int ltdd_is_of_type(lua_State *L) {
+	ltdd_push_constraint_with_value(L,
+		ltdd_eval_is_of_type, "[is_of_type] [");
 	return 1;
 }
 
