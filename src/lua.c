@@ -31,6 +31,7 @@ static void *ltdd_alloc(void *ud, void *ptr, size_t oz, size_t nz);
 
 static int ltdd_assert_that(lua_State *L);
 static int ltdd_constraint_tostring(lua_State *L);
+static int ltdd_constraint_tostring_with_value(lua_State *L);
 static int ltdd_eval_is_equal_to(lua_State *L);
 static int ltdd_eval_is_not_equal_to(lua_State *L);
 static int ltdd_eval_is_greater_than(lua_State* L);
@@ -48,6 +49,7 @@ static int ltdd_is_not_nil(lua_State *L);
 static int ltdd_is_false(lua_State *L);
 static int ltdd_is_true(lua_State *L);
 static void ltdd_push_constraint(lua_State *L, lua_CFunction eval, const char *name);
+static void ltdd_push_constraint_with_value(lua_State *L, lua_CFunction eval, const char *name);
 static void ltdd_replace_tostring(lua_State *L);
 
 static const struct luaL_Reg lib_ltdd[] = {
@@ -85,8 +87,10 @@ static void *ltdd_alloc(void *ud, void *ptr, size_t oz, size_t nz) {
 
 static int ltdd_assert_that(lua_State *L) {
 	int none3 = lua_isnone(L, 3);
-	lua_pushvalue(L, 2); // f
-	lua_pcall(L, 0, 1, 0); // C
+	lua_pushvalue(L, 2); // f/C
+	if (lua_type(L, -1) == LUA_TFUNCTION) {
+		lua_pcall(L, 0, 1, 0); // C
+	}
 	lua_pushvalue(L, -1); // C C
 	lua_pushvalue(L, 1); // C C A
 	if (none3) {
@@ -99,19 +103,10 @@ static int ltdd_assert_that(lua_State *L) {
 		lua_pushliteral(L, "assertion failed: ["); // C b s
 		lua_pushvalue(L, 1); // C b s A
 		ltdd_replace_tostring(L); // C b s s
-		lua_pushliteral(L, "] ["); // C b s s s
+		lua_pushliteral(L, "] "); // C b s s s
 		lua_pushvalue(L, -5); // C b s s s C
 		ltdd_replace_tostring(L); // C b s s s s
-		if (none3) {
-			lua_pushliteral(L, "]"); // C b s s s s s
-			lua_concat(L, 5); // C b s
-		} else {
-			lua_pushliteral(L, "] ["); // C b s s s s s
-			lua_pushvalue(L, 3); // C b s s s s s B
-			ltdd_replace_tostring(L); // C b s s s s s s
-			lua_pushliteral(L, "]"); // C b s s s s s s s
-			lua_concat(L, 7); // C b s
-		}
+		lua_concat(L, 4); // C b s
 		return lua_error(L);
 	}
 	return 0;
@@ -123,23 +118,37 @@ static int ltdd_constraint_tostring(lua_State *L) {
 	return 1;
 }
 
+static int ltdd_constraint_tostring_with_value(lua_State *L) {
+	lua_getmetatable(L, 1); // t
+	lua_getfield(L, -1, "constraint"); // t s
+	lua_getfield(L, -2, "value"); // t s V
+	ltdd_replace_tostring(L); // t s s
+	lua_pushliteral(L, "]"); // t s s s
+	lua_concat(L, 3); // t s
+	return 1;
+}
+
 static int ltdd_eval_is_equal_to(lua_State *L) {
-	lua_pushboolean(L, lua_compare(L, 2, 3, LUA_OPEQ));
+	luaL_getmetafield(L, 1, "value");
+	lua_pushboolean(L, lua_compare(L, 2, -1, LUA_OPEQ));
 	return 1;
 }
 
 static int ltdd_eval_is_not_equal_to(lua_State *L) {
-	lua_pushboolean(L, !lua_compare(L, 2, 3, LUA_OPEQ));
+	luaL_getmetafield(L, 1, "value");
+	lua_pushboolean(L, !lua_compare(L, 2, -1, LUA_OPEQ));
 	return 1;
 }
 
 static int ltdd_eval_is_greater_than(lua_State* L) {
-	lua_pushboolean(L, !lua_compare(L, 2, 3, LUA_OPLE));
+	luaL_getmetafield(L, 1, "value");
+	lua_pushboolean(L, !lua_compare(L, 2, -1, LUA_OPLE));
 	return 1;
 }
 
 static int ltdd_eval_is_less_than(lua_State* L) {
-	lua_pushboolean(L, lua_compare(L, 2, 3, LUA_OPLT));
+	luaL_getmetafield(L, 1, "value");
+	lua_pushboolean(L, lua_compare(L, 2, -1, LUA_OPLT));
 	return 1;
 }
 
@@ -164,50 +173,50 @@ static int ltdd_eval_is_true(lua_State *L) {
 }
 
 static int ltdd_is_equal_to(lua_State *L) {
-	ltdd_push_constraint(L,
-		ltdd_eval_is_equal_to, "is_equal_to");
+	ltdd_push_constraint_with_value(L,
+		ltdd_eval_is_equal_to, "[is_equal_to] [");
 	return 1;
 }
 
 static int ltdd_is_not_equal_to(lua_State *L) {
-	ltdd_push_constraint(L,
-		ltdd_eval_is_not_equal_to, "is_not_equal_to");
+	ltdd_push_constraint_with_value(L,
+		ltdd_eval_is_not_equal_to, "[is_not_equal_to] [");
 	return 1;
 }
 
 static int ltdd_is_greater_than(lua_State* L) {
-	ltdd_push_constraint(L,
-		ltdd_eval_is_greater_than, "is_greater_than");
+	ltdd_push_constraint_with_value(L,
+		ltdd_eval_is_greater_than, "[is_greater_than] [");
 	return 1;
 }
 
 static int ltdd_is_less_than(lua_State* L) {
-	ltdd_push_constraint(L,
-		ltdd_eval_is_less_than, "is_less_than");
+	ltdd_push_constraint_with_value(L,
+		ltdd_eval_is_less_than, "[is_less_than] [");
 	return 1;
 }
 
 static int ltdd_is_nil(lua_State *L) {
 	ltdd_push_constraint(L,
-		ltdd_eval_is_nil, "is_nil");
+		ltdd_eval_is_nil, "[is_nil]");
 	return 1;
 }
 
 static int ltdd_is_not_nil(lua_State *L) {
 	ltdd_push_constraint(L,
-		ltdd_eval_is_not_nil, "is_not_nil");
+		ltdd_eval_is_not_nil, "[is_not_nil]");
 	return 1;
 }
 
 static int ltdd_is_false(lua_State *L) {
 	ltdd_push_constraint(L,
-		ltdd_eval_is_false, "is_false");
+		ltdd_eval_is_false, "[is_false]");
 	return 1;
 }
 
 static int ltdd_is_true(lua_State *L) {
 	ltdd_push_constraint(L,
-		ltdd_eval_is_true, "is_true");
+		ltdd_eval_is_true, "[is_true]");
 	return 1;
 }
 
@@ -222,6 +231,24 @@ static void ltdd_push_constraint(lua_State *L, lua_CFunction eval, const char *n
 	lua_settable(L, -3); // t t
 	lua_pushliteral(L, "constraint"); // t t s
 	lua_pushstring(L, name); // t t s s
+	lua_settable(L, -3); // t t
+	lua_setmetatable(L, -2); // t
+}
+
+static void ltdd_push_constraint_with_value(lua_State *L, lua_CFunction eval, const char *name) {
+	lua_newtable(L); // t
+	lua_newtable(L); // t t
+	lua_pushliteral(L, "__call"); // t t s
+	lua_pushcfunction(L, eval); // t t s f
+	lua_settable(L, -3); // t t
+	lua_pushliteral(L, "__tostring"); // t t s
+	lua_pushcfunction(L, ltdd_constraint_tostring_with_value); // t t s f
+	lua_settable(L, -3); // t t
+	lua_pushliteral(L, "constraint"); // t t s
+	lua_pushstring(L, name); // t t s s
+	lua_settable(L, -3); // t t
+	lua_pushliteral(L, "value"); // t t s
+	lua_pushvalue(L, 1); // t t s V
 	lua_settable(L, -3); // t t
 	lua_setmetatable(L, -2); // t
 }

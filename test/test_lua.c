@@ -63,7 +63,8 @@ Ensure(Lua, assert_that_throws_error_on_failed_constraint) {
 	lua_pushinteger(L, 1); // t f i
 	lua_getfield(L, -3, "is_equal_to"); // t f i f
 	lua_pushinteger(L, 2); // t f i f i
-	assert_that(lua_pcall(L, 3, 0, 0), is_not_equal_to(LUA_OK));
+	lua_pcall(L, 1, 1, 0);
+	assert_that(lua_pcall(L, 2, 0, 0), is_not_equal_to(LUA_OK));
 }
 
 Ensure(Lua, assert_that_throws_formatted_error_string_1arg) {
@@ -83,7 +84,8 @@ Ensure(Lua, assert_that_throws_formatted_error_string_2arg) {
 	lua_pushinteger(L, 1); // t f i
 	lua_getfield(L, -3, "is_equal_to"); // t f i f
 	lua_pushinteger(L, 2); // t f i f i
-	lua_pcall(L, 3, 0, 0);
+	lua_pcall(L, 1, 1, 0);
+	lua_pcall(L, 2, 0, 0);
 	assert_that(lua_tostring(L, -1), is_equal_to_string("assertion failed: [1] [is_equal_to] [2]"));
 }
 
@@ -94,17 +96,18 @@ Ensure(Lua, assert_that_passes_on_fulfilled_constraint) {
 	lua_pushinteger(L, 1); // t f i
 	lua_getfield(L, -3, "is_equal_to"); // t f i f
 	lua_pushinteger(L, 1); // t f i f i
-	assert_that(lua_pcall(L, 3, 0, 0), is_equal_to(LUA_OK));
+	lua_pcall(L, 1, 1, 0);
+	assert_that(lua_pcall(L, 2, 0, 0), is_equal_to(LUA_OK));
 }
 
 Ensure(Lua, is_equal_to_evals_true_if_equal) {
 	lua_State *L = ltdd_lua_open_libs();
 	lua_getglobal(L, "ltdd");
 	lua_getfield(L, -1, "is_equal_to");
-	lua_pcall(L, 0, 1, 0);
 	lua_pushinteger(L, 1);
+	lua_pcall(L, 1, 1, 0);
 	lua_pushinteger(L, 1);
-	lua_pcall(L, 2, 1, 0);
+	lua_pcall(L, 1, 1, 0);
 	assert_that(lua_toboolean(L, -1), is_equal_to(1));
 	lua_close(L);
 }
@@ -113,10 +116,10 @@ Ensure(Lua, is_equal_to_evals_false_if_not_equal) {
 	lua_State *L = ltdd_lua_open_libs();
 	lua_getglobal(L, "ltdd");
 	lua_getfield(L, -1, "is_equal_to");
-	lua_pcall(L, 0, 1, 0);
-	lua_pushinteger(L, 0);
 	lua_pushinteger(L, 1);
-	lua_pcall(L, 2, 1, 0);
+	lua_pcall(L, 1, 1, 0);
+	lua_pushinteger(L, 0);
+	lua_pcall(L, 1, 1, 0);
 	assert_that(lua_toboolean(L, -1), is_equal_to(0));
 	lua_close(L);
 }
@@ -125,10 +128,10 @@ Ensure(Lua, is_not_equal_to_evals_true_if_not_equal) {
 	lua_State *L = ltdd_lua_open_libs();
 	lua_getglobal(L, "ltdd");
 	lua_getfield(L, -1, "is_not_equal_to");
-	lua_pcall(L, 0, 1, 0);
-	lua_pushinteger(L, 0);
 	lua_pushinteger(L, 1);
-	lua_pcall(L, 2, 1, 0);
+	lua_pcall(L, 1, 1, 0);
+	lua_pushinteger(L, 0);
+	lua_pcall(L, 1, 1, 0);
 	assert_that(lua_toboolean(L, -1), is_equal_to(1));
 	lua_close(L);
 }
@@ -137,10 +140,10 @@ Ensure(Lua, is_not_equal_to_evals_false_if_equal) {
 	lua_State *L = ltdd_lua_open_libs();
 	lua_getglobal(L, "ltdd");
 	lua_getfield(L, -1, "is_not_equal_to");
-	lua_pcall(L, 0, 1, 0);
 	lua_pushinteger(L, 1);
+	lua_pcall(L, 1, 1, 0);
 	lua_pushinteger(L, 1);
-	lua_pcall(L, 2, 1, 0);
+	lua_pcall(L, 1, 1, 0);
 	assert_that(lua_toboolean(L, -1), is_equal_to(0));
 	lua_close(L);
 }
@@ -149,10 +152,10 @@ Ensure(Lua, is_greater_than_evals_true_if_greater_than) {
 	lua_State *L = ltdd_lua_open_libs();
 	lua_getglobal(L, "ltdd");
 	lua_getfield(L, -1, "is_greater_than");
-	lua_pcall(L, 0, 1, 0);
-	lua_pushinteger(L, 1);
 	lua_pushinteger(L, 0);
-	lua_pcall(L, 2, 1, 0);
+	lua_pcall(L, 1, 1, 0);
+	lua_pushinteger(L, 1);
+	lua_pcall(L, 1, 1, 0);
 	assert_that(lua_toboolean(L, -1), is_equal_to(1));
 	lua_close(L);
 }
@@ -161,10 +164,10 @@ Ensure(Lua, is_greater_than_evals_false_if_not_greater_than) {
 	lua_State *L = ltdd_lua_open_libs();
 	lua_getglobal(L, "ltdd");
 	lua_getfield(L, -1, "is_greater_than");
-	lua_pcall(L, 0, 1, 0);
-	lua_pushinteger(L, 0);
 	lua_pushinteger(L, 1);
-	lua_pcall(L, 2, 1, 0);
+	lua_pcall(L, 1, 1, 0);
+	lua_pushinteger(L, 0);
+	lua_pcall(L, 1, 1, 0);
 	assert_that(lua_toboolean(L, -1), is_equal_to(0));
 	lua_close(L);
 }
@@ -173,10 +176,10 @@ Ensure(Lua, is_less_than_evals_true_if_less_than) {
 	lua_State *L = ltdd_lua_open_libs();
 	lua_getglobal(L, "ltdd");
 	lua_getfield(L, -1, "is_less_than");
-	lua_pcall(L, 0, 1, 0);
-	lua_pushinteger(L, 0);
 	lua_pushinteger(L, 1);
-	lua_pcall(L, 2, 1, 0);
+	lua_pcall(L, 1, 1, 0);
+	lua_pushinteger(L, 0);
+	lua_pcall(L, 1, 1, 0);
 	assert_that(lua_toboolean(L, -1), is_equal_to(1));
 	lua_close(L);
 }
@@ -185,10 +188,10 @@ Ensure(Lua, is_less_than_evals_false_if_not_less_than) {
 	lua_State *L = ltdd_lua_open_libs();
 	lua_getglobal(L, "ltdd");
 	lua_getfield(L, -1, "is_less_than");
-	lua_pcall(L, 0, 1, 0);
-	lua_pushinteger(L, 1);
 	lua_pushinteger(L, 0);
-	lua_pcall(L, 2, 1, 0);
+	lua_pcall(L, 1, 1, 0);
+	lua_pushinteger(L, 1);
+	lua_pcall(L, 1, 1, 0);
 	assert_that(lua_toboolean(L, -1), is_equal_to(0));
 	lua_close(L);
 }
