@@ -30,6 +30,8 @@ SOFTWARE.
 static void *ltdd_alloc(void *ud, void *ptr, size_t oz, size_t nz);
 
 static int ltdd_assert_that(lua_State *L);
+static int ltdd_create_context(lua_State *L);
+
 static int ltdd_constraint_tostring(lua_State *L);
 static int ltdd_constraint_tostring_with_value(lua_State *L);
 static int ltdd_eval_is_equal_to(lua_State *L);
@@ -56,6 +58,7 @@ static void ltdd_replace_tostring(lua_State *L);
 
 static const struct luaL_Reg lib_ltdd[] = {
 	{"assert_that", ltdd_assert_that},
+	{"create_context", ltdd_create_context},
 	{"is_equal_to", ltdd_is_equal_to},
 	{"is_not_equal_to", ltdd_is_not_equal_to},
 	{"is_greater_than", ltdd_is_greater_than},
@@ -112,6 +115,11 @@ static int ltdd_assert_that(lua_State *L) {
 		lua_concat(L, 4); // C b s
 		return lua_error(L);
 	}
+	return 0;
+}
+
+static int ltdd_create_context(lua_State *L) {
+	// TODO
 	return 0;
 }
 

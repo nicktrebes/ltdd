@@ -24,6 +24,10 @@ Ensure(lua_open_libs, open_libs_creates_ltdd_assert_that) {
 	test_function_created("assert_that");
 }
 
+Ensure(lua_open_libs, open_libs_creates_ltdd_create_context) {
+	test_function_created("create_context");
+}
+
 Ensure(lua_open_libs, open_libs_creates_ltdd_is_equal_to) {
 	test_function_created("is_equal_to");
 }
@@ -66,6 +70,7 @@ TestSuite *test_lua_open_libs(void) {
 	add_test_with_context(suite, lua_open_libs, open_libs_provides_valid_state);
 	add_test_with_context(suite, lua_open_libs, open_libs_creates_ltdd_table);
 	add_test_with_context(suite, lua_open_libs, open_libs_creates_ltdd_assert_that);
+	add_test_with_context(suite, lua_open_libs, open_libs_creates_ltdd_create_context);
 	add_test_with_context(suite, lua_open_libs, open_libs_creates_ltdd_is_equal_to);
 	add_test_with_context(suite, lua_open_libs, open_libs_creates_ltdd_is_not_equal_to);
 	add_test_with_context(suite, lua_open_libs, open_libs_creates_ltdd_is_greater_than);
