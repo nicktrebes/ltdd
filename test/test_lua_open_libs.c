@@ -15,27 +15,31 @@ static const char *ltdd_functions[] = {
 	NULL
 };
 
-Describe(lua_open_libs);
-BeforeEach(lua_open_libs) {}
-AfterEach(lua_open_libs) {}
+static lua_State *L = NULL;
 
-Ensure(lua_open_libs, open_libs_provides_valid_state) {
-	lua_State *L = ltdd_lua_open_libs();
-	lua_getglobal(L, "_VERSION");
-	assert_that(lua_tostring(L, -1), is_equal_to_string(LUA_VERSION));
+Describe(lua_open_libs);
+
+BeforeEach(lua_open_libs) {
+	L = ltdd_lua_open_libs();
+	lua_getglobal(L, "ltdd");
+}
+
+AfterEach(lua_open_libs) {
 	lua_close(L);
 }
 
+Ensure(lua_open_libs, open_libs_provides_valid_state) {
+	lua_getglobal(L, "_VERSION");
+	assert_that(lua_tostring(L, -1), is_equal_to_string(LUA_VERSION));
+}
+
 Ensure(lua_open_libs, open_libs_creates_ltdd_table) {
-	lua_State *L = ltdd_lua_open_libs();
-	lua_getglobal(L, "ltdd");
 	assert_that(lua_type(L, -1), is_equal_to(LUA_TTABLE));
 	for (int i = 0; ltdd_functions[i] != NULL; ++i) {
 		lua_getfield(L, -1, ltdd_functions[i]);
 		assert_that(lua_type(L, -1), is_equal_to(LUA_TFUNCTION));
 		lua_pop(L, 1);
 	}
-	lua_close(L);
 }
 
 TestSuite *test_lua_open_libs(void) {

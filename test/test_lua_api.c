@@ -1,12 +1,19 @@
 #include "test.h"
 
+static lua_State *L = NULL;
+
 Describe(lua_api);
-BeforeEach(lua_api) {}
-AfterEach(lua_api) {}
+
+BeforeEach(lua_api) {
+	L = ltdd_lua_open_libs();
+	lua_getglobal(L, "ltdd"); // t
+}
+
+AfterEach(lua_api) {
+	lua_close(L);
+}
 
 Ensure(lua_api, assert_that_throws_error_on_failed_constraint) {
-	lua_State *L = ltdd_lua_open_libs();
-	lua_getglobal(L, "ltdd"); // t
 	lua_getfield(L, -1, "assert_that"); // t f
 	lua_pushinteger(L, 1); // t f i
 	lua_getfield(L, -3, "is_equal_to"); // t f i f
@@ -16,8 +23,6 @@ Ensure(lua_api, assert_that_throws_error_on_failed_constraint) {
 }
 
 Ensure(lua_api, assert_that_throws_formatted_error_string_1arg) {
-	lua_State *L = ltdd_lua_open_libs();
-	lua_getglobal(L, "ltdd"); // t
 	lua_getfield(L, -1, "assert_that"); // t f
 	lua_pushinteger(L, 1); // t f i
 	lua_getfield(L, -3, "is_nil"); // t f i f
@@ -26,8 +31,6 @@ Ensure(lua_api, assert_that_throws_formatted_error_string_1arg) {
 }
 
 Ensure(lua_api, assert_that_throws_formatted_error_string_2arg) {
-	lua_State *L = ltdd_lua_open_libs();
-	lua_getglobal(L, "ltdd"); // t
 	lua_getfield(L, -1, "assert_that"); // t f
 	lua_pushinteger(L, 1); // t f i
 	lua_getfield(L, -3, "is_equal_to"); // t f i f
@@ -38,8 +41,6 @@ Ensure(lua_api, assert_that_throws_formatted_error_string_2arg) {
 }
 
 Ensure(lua_api, assert_that_passes_on_fulfilled_constraint) {
-	lua_State *L = ltdd_lua_open_libs();
-	lua_getglobal(L, "ltdd"); // t
 	lua_getfield(L, -1, "assert_that"); // t f
 	lua_pushinteger(L, 1); // t f i
 	lua_getfield(L, -3, "is_equal_to"); // t f i f
