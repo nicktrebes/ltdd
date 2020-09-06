@@ -34,6 +34,8 @@ static int ltdd_create_context(lua_State *L);
 
 static int ltdd_constraint_tostring(lua_State *L);
 static int ltdd_constraint_tostring_with_value(lua_State *L);
+static int ltdd_context_tostring(lua_State *L);
+
 static int ltdd_eval_is_equal_to(lua_State *L);
 static int ltdd_eval_is_not_equal_to(lua_State *L);
 static int ltdd_eval_is_greater_than(lua_State* L);
@@ -81,6 +83,9 @@ lua_State *ltdd_lua_open_libs(void) {
 void ltdd_lua_open_ltdd(lua_State *L) {
 	luaL_newlibtable(L, lib_ltdd);
 	luaL_setfuncs(L, lib_ltdd, 0);
+	lua_pushliteral(L, "ltdd");
+	lua_pushvalue(L, -2);
+	lua_settable(L, -3);
 	lua_setglobal(L, "ltdd");
 }
 
@@ -119,23 +124,51 @@ static int ltdd_assert_that(lua_State *L) {
 }
 
 static int ltdd_create_context(lua_State *L) {
-	// TODO
-	return 0;
+	lua_Debug ar;
+	lua_getstack(L, 1, &ar);
+	const char *source = (ar.source == NULL ? "[C]" : &ar.source[1]);
+
+	lua_newtable(L); // t
+	lua_newtable(L); // t t
+
+	lua_pushliteral(L, "__index"); // t t s
+	lua_getglobal(L, "ltdd"); // t t s t
+	lua_settable(L, -3); // t t
+
+	lua_pushliteral(L, "__tostring"); // t t s
+	lua_pushcfunction(L, ltdd_context_tostring); // t t s f
+	lua_settable(L, -3); // t t
+
+	lua_pushliteral(L, "source"); // t t s
+	lua_pushstring(L, source); // t t s s
+	if (ar.linedefined >= 1) {
+		lua_pushliteral(L, ":"); // t t s s s
+		lua_pushinteger(L, ar.linedefined); // t t s s s i
+		lua_tostring(L, -1); // t t s s s s
+		lua_concat(L, 3); // t t s s
+	}
+	lua_settable(L, -3); // t t
+
+	lua_setmetatable(L, -2); // t
+	return 1;
 }
 
 static int ltdd_constraint_tostring(lua_State *L) {
-	lua_getmetatable(L, 1); // t
-	lua_getfield(L, -1, "constraint"); // t s
+	luaL_getmetafield(L, 1, "constraint");
 	return 1;
 }
 
 static int ltdd_constraint_tostring_with_value(lua_State *L) {
-	lua_getmetatable(L, 1); // t
-	lua_getfield(L, -1, "constraint"); // t s
-	lua_getfield(L, -2, "value"); // t s V
-	ltdd_replace_tostring(L); // t s s
-	lua_pushliteral(L, "]"); // t s s s
-	lua_concat(L, 3); // t s
+	luaL_getmetafield(L, 1, "constraint"); // s
+	luaL_getmetafield(L, 1, "value"); // s V
+	ltdd_replace_tostring(L); // s s
+	lua_pushliteral(L, "]"); // s s s
+	lua_concat(L, 3); // s
+	return 1;
+}
+
+static int ltdd_context_tostring(lua_State *L) {
+	luaL_getmetafield(L, 1, "source");
 	return 1;
 }
 

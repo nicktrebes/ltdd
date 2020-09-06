@@ -49,6 +49,19 @@ Ensure(lua_api, assert_that_passes_on_fulfilled_constraint) {
 	assert_that(lua_pcall(L, 2, 0, 0), is_equal_to(LUA_OK));
 }
 
+Ensure(lua_api, create_context_returns_context_object) {
+	lua_getfield(L, -1, "create_context"); // t f
+	lua_pcall(L, 0, 1, 0); // t t
+	assert_that(luaL_getmetafield(L, -1, "__index"), is_not_equal_to(LUA_TNIL)); // t t t
+	assert_that(lua_compare(L, -1, -3, LUA_OPEQ), is_not_equal_to(0));
+	lua_pop(L, 1); // t t
+	luaL_getmetafield(L, -1, "__tostring"); // t t f
+	lua_pushvalue(L, -2); // t t f t
+	assert_that(lua_pcall(L, 1, 1, 0), is_equal_to(LUA_OK)); // t t s
+	const char *tostring_value = lua_tostring(L, -1);
+	assert_that(tostring_value, is_equal_to_string("[C]"));
+}
+
 TestSuite *test_lua_api(void) {
 	TestSuite *suite = create_test_suite();
 
@@ -56,6 +69,7 @@ TestSuite *test_lua_api(void) {
 	add_test_with_context(suite, lua_api, assert_that_throws_formatted_error_string_1arg);
 	add_test_with_context(suite, lua_api, assert_that_throws_formatted_error_string_2arg);
 	add_test_with_context(suite, lua_api, assert_that_passes_on_fulfilled_constraint);
+	add_test_with_context(suite, lua_api, create_context_returns_context_object);
 
 	return suite;
 }
