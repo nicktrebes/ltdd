@@ -16,3 +16,5 @@ Lua Test Driven Development
 | `ltdd.is_greater_than(value)` | `> value` |
 | `ltdd.is_less_than(value)` | `< value` |
 | `ltdd.is_of_type(value)` | `type(actual) == value` |
+
+`ltdd.create_context()` returns a context table for tests. This table will be used as the `_ENV` table for each test registered with it. The returned context table has `ltdd` set as its `__index` metavalue.
