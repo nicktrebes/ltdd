@@ -50,7 +50,17 @@ end
 
 function journey.isEqualTo_fails_on_not_equal(self)
 	self.assertThrows(function()
-			self.assertThat(nil, self.isNotNil)
+			self.assertThat(1, self.isEqualTo(2))
+		end)
+end
+
+function journey.isNotEqualTo_passes_on_not_equal(self)
+	self.assertThat(1, self.isNotEqualTo(2))
+end
+
+function journey.isNotEqualTo_fails_on_equal(self)
+	self.assertThrows(function()
+			self.assertThat(1, self.isNotEqualTo(1))
 		end)
 end
 
