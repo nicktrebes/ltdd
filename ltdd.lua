@@ -120,6 +120,18 @@ function ltdd.isTrue()
 		end)
 end
 
+function ltdd.isFalse()
+	return createConstraint('[false]', function(self, actual)
+			return not (actual and true)
+		end)
+end
+
+function ltdd.isNil()
+	return createConstraint('[nil]', function(self, actual)
+			return actual == nil
+		end)
+end
+
 function ltdd.isEqualTo(value)
 	return createConstraintWithVal('[equal to] [', value, function(self, actual)
 			return actual == getmetatable(self).value
