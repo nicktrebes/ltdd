@@ -162,3 +162,9 @@ function ltdd.isLessThan(value)
 		end)
 end
 
+function ltdd.isOfType(value)
+	return createConstraintWithVal('[of type] [', value, function(self, actual)
+			return type(actual) == getmetatable(self).value
+		end)
+end
+

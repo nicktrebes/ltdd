@@ -84,4 +84,14 @@ function journey.isLessThan_fails_on_not_less_than(self)
 		end)
 end
 
+function journey.isOfType_passes_on_correct_type_name(self)
+	self.assertThat('hello', self.isOfType('string'))
+end
+
+function journey.isOfType_fails_on_incorrect_type_name(self)
+	self.assertThrows(function()
+			self.assertThat('hello', self.isOfType('table'))
+		end)
+end
+
 journey()
