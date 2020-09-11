@@ -149,3 +149,9 @@ function ltdd.isNotEqualTo(value)
 			return actual ~= getmetatable(self).value
 		end)
 end
+
+function ltdd.isGreaterThan(value)
+	return createConstraintWithVal('[greater than] [', value, function(self, actual)
+			return actual > getmetatable(self).value
+		end)
+end
