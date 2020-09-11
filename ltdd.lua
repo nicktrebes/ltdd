@@ -69,18 +69,36 @@ local function addTest(suite, name, test)
 	getmetatable(suite).test[tostring(name)] = test
 end
 
-local function runSuite(suite)
-	local green, total = 0, 0
+local function runSuite(suite, ...)
+	local args, green, total = {...}, 0, 0
 	local meta = getmetatable(suite)
 	
-	for name, test in pairs(meta.test) do
-		total = total + 1
-		
-		local ok, err = pcall(test, suite)
-		if ok then
-			green = green + 1
-		else
-			print(meta.name .. ' -> ' .. name .. ':\n  ' .. tostring(err))
+	if #args > 0 then
+		for i, name in ipairs(args) do
+			total = total + 1
+			name = tostring(name)
+			
+			if meta.test[name] then
+				local ok, err = pcall(meta.test[name], suite)
+				if ok then
+					green = green + 1
+				else
+					print(meta.name .. ' -> ' .. name .. ':\n  ' .. tostring(err))
+				end
+			else
+				print(meta.name .. ' -> ' .. name .. ': no such test')
+			end
+		end
+	else
+		for name, test in pairs(meta.test) do
+			total = total + 1
+			
+			local ok, err = pcall(test, suite)
+			if ok then
+				green = green + 1
+			else
+				print(meta.name .. ' -> ' .. name .. ':\n  ' .. tostring(err))
+			end
 		end
 	end
 	

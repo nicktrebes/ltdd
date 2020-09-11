@@ -94,4 +94,4 @@ function journey.isOfType_fails_on_incorrect_type_name(self)
 		end)
 end
 
-journey()
+journey(...)
