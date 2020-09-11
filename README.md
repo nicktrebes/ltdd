@@ -3,18 +3,26 @@ Lua Test Driven Development
 
 ## ltdd Lua API
 
-`ltdd.assert_that(actual, constraint)` behaves according to this table:
+`ltdd.assertThat(actual, constraint)` behaves according to this table:
 
 | Constraint | Passes if actual value/expression... |
 | ---------- | ------------------------------------ |
-| `ltdd.is_true` | evaluates to `true` |
-| `ltdd.is_false` | evaluates to `false` |
-| `ltdd.is_nil` | evaluates to `nil` |
-| `ltdd.is_not_nil` | evaluates to anything other than `nil` |
-| `ltdd.is_equal_to(value)` | `== value` |
-| `ltdd.is_not_equal_to(value)` | `~= value` |
-| `ltdd.is_greater_than(value)` | `> value` |
-| `ltdd.is_less_than(value)` | `< value` |
-| `ltdd.is_of_type(value)` | `type(actual) == value` |
+| `ltdd.isTrue` | evaluates to `true` |
+| `ltdd.isFalse` | evaluates to `false` |
+| `ltdd.isNil` | evaluates to `nil` |
+| `ltdd.isNotNil` | evaluates to anything other than `nil` |
+| `ltdd.isEqualTo(value)` | `== value` |
+| `ltdd.isNotEqualTo(value)` | `~= value` |
+| `ltdd.isGreaterThan(value)` | `> value` |
+| `ltdd.isLessThan(value)` | `< value` |
+| `ltdd.isOfType(value)` | `type(actual) == value` |
 
-`ltdd.create_context()` returns a context table for tests. This table will be used as the `_ENV` table for each test registered with it. The returned context table has `ltdd` set as its `__index` metavalue.
+`ltdd.assertThrows(fn, [msg, [...]])` protected calls `fn` with any given extra arguments.
+The assertion fails when `fn` fails to raise an error.
+If not nil, `msg` will be compared with any raised error.
+In this case, the assertion will fail if `msg` is not equal to the raised error.
+
+`ltdd.createSuite()` returns a test suite object.
+Its `__index` metavalue is `ltdd` and its `__newindex` metamethod adds tests to a table in its metatable.
+The test suite can be run by invoking its `__call` metamethod.
+If provided, string arguments to this function will be used to select specific tests to run instead of the whole suite.
