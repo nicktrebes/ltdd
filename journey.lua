@@ -74,4 +74,14 @@ function journey.isGreaterThan_fails_on_not_greater_than(self)
 		end)
 end
 
+function journey.isLessThan_passes_on_less_than(self)
+	self.assertThat(1, self.isLessThan(2))
+end
+
+function journey.isLessThan_fails_on_not_less_than(self)
+	self.assertThrows(function()
+			self.assertThat(1, self.isLessThan(1))
+		end)
+end
+
 journey()

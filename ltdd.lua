@@ -155,3 +155,10 @@ function ltdd.isGreaterThan(value)
 			return actual > getmetatable(self).value
 		end)
 end
+
+function ltdd.isLessThan(value)
+	return createConstraintWithVal('[less than] [', value, function(self, actual)
+			return actual < getmetatable(self).value
+		end)
+end
+
