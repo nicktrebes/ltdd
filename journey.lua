@@ -44,4 +44,14 @@ function journey.isNotNil_fails_on_eval_nil(self)
 		end)
 end
 
+function journey.isEqualTo_passes_on_equal(self)
+	self.assertThat(1, self.isEqualTo(1))
+end
+
+function journey.isEqualTo_fails_on_not_equal(self)
+	self.assertThrows(function()
+			self.assertThat(nil, self.isNotNil)
+		end)
+end
+
 journey()
