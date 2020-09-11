@@ -17,6 +17,11 @@ Lua Test Driven Development
 | `ltdd.isLessThan(value)` | `< value` |
 | `ltdd.isOfType(value)` | `type(actual) == value` |
 
+`ltdd.assertThrows(fn, [msg, [...]])` protected calls `fn` with any given extra arguments.
+The assertion fails when `fn` fails to raise an error.
+If not nil, `msg` will be compared with any raised error.
+In this case, the assertion will fail if `msg` is not equal to the raised error.
+
 `ltdd.createSuite()` returns a test suite object.
 Its `__index` metavalue is `ltdd` and its `__newindex` metamethod adds tests to a table in its metatable.
 The test suite can be run by invoking its `__call` metamethod.
