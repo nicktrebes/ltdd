@@ -132,6 +132,12 @@ function ltdd.isNil()
 		end)
 end
 
+function ltdd.isNotNil()
+	return createConstraint('[not nil]', function(self, actual)
+			return actual ~= nil
+		end)
+end
+
 function ltdd.isEqualTo(value)
 	return createConstraintWithVal('[equal to] [', value, function(self, actual)
 			return actual == getmetatable(self).value
