@@ -22,7 +22,7 @@ The assertion fails when `fn` fails to raise an error.
 If not nil, `msg` will be compared with any raised error.
 In this case, the assertion will fail if `msg` is not equal to the raised error.
 
-`ltdd.createSuite()` returns a test suite object.
+`ltdd.createSuite(name)` returns a test suite object with name `name`.
 Its `__index` metavalue is `ltdd` and its `__newindex` metamethod adds tests to a table in its metatable.
 The test suite can be run by invoking its `__call` metamethod.
 If provided, string arguments to this function will be used to select specific tests to run instead of the whole suite.
