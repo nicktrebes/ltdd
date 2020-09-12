@@ -25,8 +25,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ]]--
 
-local args = {...}
-
 local function getDisplayString(value)
 	local str = tostring(value)
 	if type(value) == "string" then
@@ -184,5 +182,62 @@ function ltdd.isOfType(value)
 	return createConstraintWithVal('[of type] [', value, function(self, actual)
 			return type(actual) == getmetatable(self).value
 		end)
+end
+
+function ltdd.isEqualToTable(value)
+	return createConstraintWithVal('[equal to] [', value, function(self, actual)
+			local value = getmetatable(self).value
+			for k, v in pairs(actual) do
+				if value[k] == nil then
+					return false
+				end
+			end
+			for k, v in pairs(value) do
+				if actual[k] == nil then
+					return false
+				end
+			end
+			return true
+		end)
+end
+
+function ltdd.assertTrue(actual)
+	ltdd.assertThat(actual, ltdd.isTrue)
+end
+
+function ltdd.assertFalse(actual)
+	ltdd.assertThat(actual, ltdd.isFalse)
+end
+
+function ltdd.assertNil(actual)
+	ltdd.assertThat(actual, ltdd.isNil)
+end
+
+function ltdd.assertNotNil(actual)
+	ltdd.assertThat(actual, ltdd.isNotNil)
+end
+
+function ltdd.assertEqual(actual, value)
+	ltdd.assertThat(actual, ltdd.isEqualTo(value))
+end
+
+function ltdd.assertNotEqual(actual, value)
+	ltdd.assertThat(actual, ltdd.isNotEqualTo(value))
+end
+
+function ltdd.assertGreaterThan(actual, value)
+	ltdd.assertThat(actual, ltdd.isGreaterThan(value))
+end
+
+function ltdd.assertLessThan(actual, value)
+	ltdd.assertThat(actual, ltdd.isLessThan(value))
+end
+
+function ltdd.assertType(actual, value)
+	ltdd.assertThat(actual, ltdd.isOfType(value))
+end
+
+function ltdd.assertTablesEqual(actual, value)
+	ltdd.assertThat(actual, ltdd.isEqualToTable(value))
 end
 
