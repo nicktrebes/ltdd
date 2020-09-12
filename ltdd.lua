@@ -188,12 +188,12 @@ function ltdd.isEqualToTable(value)
 	return createConstraintWithVal('[equal to] [', value, function(self, actual)
 			local value = getmetatable(self).value
 			for k, v in pairs(actual) do
-				if value[k] == nil then
+				if value[k] ~= v then
 					return false
 				end
 			end
 			for k, v in pairs(value) do
-				if actual[k] == nil then
+				if actual[k] ~= v then
 					return false
 				end
 			end
