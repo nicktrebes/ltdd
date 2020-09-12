@@ -164,4 +164,24 @@ function journey.assertGreaterThan_fails_on_eval_not_greater_than(self)
 		end)
 end
 
+function journey.assertLessThan_passes_on_eval_less_than(self)
+	self.assertLessThan(1, 2)
+end
+
+function journey.assertLessThan_fails_on_eval_not_less_than(self)
+	self.assertThrows(function()
+			self.assertLessThan(1, 1)
+		end)
+end
+
+function journey.assertType_passes_on_correct_type_name(self)
+	self.assertType('hello', 'string')
+end
+
+function journey.assertType_fails_on_incorrect_type_name(self)
+	self.assertThrows(function()
+			self.assertType('hello', 'table')
+		end)
+end
+
 journey(...)

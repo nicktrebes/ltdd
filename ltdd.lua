@@ -212,3 +212,11 @@ function ltdd.assertGreaterThan(actual, value)
 	ltdd.assertThat(actual, ltdd.isGreaterThan(value))
 end
 
+function ltdd.assertLessThan(actual, value)
+	ltdd.assertThat(actual, ltdd.isLessThan(value))
+end
+
+function ltdd.assertType(actual, value)
+	ltdd.assertThat(actual, ltdd.isOfType(value))
+end
+
