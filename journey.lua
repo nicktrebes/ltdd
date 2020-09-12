@@ -104,4 +104,14 @@ function journey.assertTrue_fails_on_eval_false(self)
 		end)
 end
 
+function journey.assertFalse_passes_on_eval_false(self)
+	self.assertFalse(false)
+end
+
+function journey.assertFalse_fails_on_eval_true(self)
+	self.assertThrows(function()
+			self.assertFalse(true)
+		end)
+end
+
 journey(...)

@@ -188,3 +188,7 @@ function ltdd.assertTrue(actual)
 	ltdd.assertThat(actual, ltdd.isTrue)
 end
 
+function ltdd.assertFalse(actual)
+	ltdd.assertThat(actual, ltdd.isFalse)
+end
+
