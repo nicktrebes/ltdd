@@ -184,4 +184,20 @@ function journey.assertType_fails_on_incorrect_type_name(self)
 		end)
 end
 
+function journey.isEqualToTable_passes_on_equal_tables(self)
+	self.assertThat({1, 2, 3}, self.isEqualToTable({1, 2, 3}))
+end
+
+function journey.isEqualToTable_fails_on_subset(self)
+	self.assertThrows(function()
+			self.assertThat({1, 2}, self.isEqualToTable({1, 2, 3}))
+		end)
+end
+
+function journey.isEqualToTable_fails_on_superset(self)
+	self.assertThrows(function()
+			self.assertThat({1, 2, 3, 4}, self.isEqualToTable({1, 2, 3}))
+		end)
+end
+
 journey(...)

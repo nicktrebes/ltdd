@@ -184,6 +184,23 @@ function ltdd.isOfType(value)
 		end)
 end
 
+function ltdd.isEqualToTable(value)
+	return createConstraintWithVal('[equal to] [', value, function(self, actual)
+			local value = getmetatable(self).value
+			for k, v in pairs(actual) do
+				if value[k] == nil then
+					return false
+				end
+			end
+			for k, v in pairs(value) do
+				if actual[k] == nil then
+					return false
+				end
+			end
+			return true
+		end)
+end
+
 function ltdd.assertTrue(actual)
 	ltdd.assertThat(actual, ltdd.isTrue)
 end
