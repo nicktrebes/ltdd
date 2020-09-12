@@ -216,4 +216,40 @@ function journey.assertTablesEqual_fails_on_superset(self)
 		end)
 end
 
+function journey.mock_assertCalledWith_passes_on_matching_call(self)
+	local old_print = print
+	print = self.createMock('print')
+	print('test')
+	print:assertCalledWith('test')
+	print = old_print
+end
+
+function journey.mock_assertCalledWith_fails_on_non_matching_call(self)
+	local mock = self.createMock('myMock')
+	mock('test')
+	self.assertThrows(function()
+			mock:assertCalledWith('test', 'hello')
+		end)
+end
+
+function journey.mock_returns_values_from_table(self)
+	local mock = self.createMock('helloWorld')
+	mock.return_value = {'hello', 'world'}
+	for i = 1, 100 do
+		if i % 2 == 1 then
+			self.assertEqual(mock(), 'hello')
+		else
+			self.assertEqual(mock(), 'world')
+		end
+	end
+end
+
+function journey.mock_returns_non_table_value(self)
+	local mock = self.createMock('returnsZero')
+	mock.return_value = 0
+	for i = 1, 100 do
+		self.assertEqual(mock(), 0)
+	end
+end
+
 journey(...)

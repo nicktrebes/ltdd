@@ -111,13 +111,62 @@ function ltdd.assertThat(actual, constraint)
 end
 
 function ltdd.assertThrows(fn, msg, ...)
-	local info = debug.getinfo(fn, 'n')
 	local ok, err = pcall(fn, ...)
 	if ok then
-		error('assertion failed: function ' .. tostring(info.name) .. ' failed to raise an error')
+		error('assertion failed: function failed to raise an error')
 	elseif msg ~= nil then
 		ltdd.assertThat(err, ltdd.isEqualTo(msg))
 	end
+end
+
+local function tablesEqual(t1, t2)
+	for k, v in pairs(t1) do
+		if t2[k] ~= v then
+			return false
+		end
+	end
+	for k, v in pairs(t2) do
+		if t1[k] ~= v then
+			return false
+		end
+	end
+	return true
+end
+
+local function mockAssertCalledWith(mock, ...)
+	local meta = getmetatable(mock)
+	local args = {...}
+	for i, call in ipairs(meta.calls) do
+		if tablesEqual(args, call) then
+			return
+		end
+	end
+	
+	error('assertion failed: mock ' .. meta.name .. ' did not have a matching call')
+end
+
+local function mockCall(mock, ...)
+	local meta = getmetatable(mock)
+	meta.calls[#meta.calls+1] = {...}
+	if type(mock.return_value) == 'table' then
+		local value = mock.return_value[meta.counter]
+		meta.counter = (meta.counter % #mock.return_value) + 1
+		return value
+	else
+		return mock.return_value
+	end
+end
+
+function ltdd.createMock(name)
+	return setmetatable({}, {
+		__call = mockCall,
+		__index = {
+			assertCalledWith = mockAssertCalledWith
+		},
+		calls = {},
+		counter = 1,
+		name = tostring(name)
+	})
 end
 
 function ltdd.createSuite(name)
@@ -186,18 +235,7 @@ end
 
 function ltdd.isEqualToTable(value)
 	return createConstraintWithVal('[equal to] [', value, function(self, actual)
-			local value = getmetatable(self).value
-			for k, v in pairs(actual) do
-				if value[k] ~= v then
-					return false
-				end
-			end
-			for k, v in pairs(value) do
-				if actual[k] ~= v then
-					return false
-				end
-			end
-			return true
+			return tablesEqual(actual, getmetatable(self).value)
 		end)
 end
 

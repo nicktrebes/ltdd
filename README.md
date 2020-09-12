@@ -43,6 +43,12 @@ In this case, the assertion will fail if `msg` is not equal to the raised error.
 
 `ltdd.assertType(actual, value)` is equivalent to `ltdd.assertThat(actual, ltdd.isOfType(value))`
 
+`ltdd.createMock(name)` returns a mock object with name `name`.
+If `mock.return_value` is a table, calling `mock(...)` repeatedly will cycle through that table, returning one value per call.
+If `mock.return_value` is anything else, calling `mock(...)` repeatedly will return `mock.return_value` each call.
+The arguments given to `mock(...)` are stored in the mock object's `calls` metavalue table.
+`mock:assertCalledWith(...)` will fail if `mock(...)` was never previously called with the same arguments.
+
 `ltdd.createSuite(name)` returns a test suite object with name `name`.
 Its `__index` metavalue is `ltdd` and its `__newindex` metamethod adds tests to a table in its metatable.
 The test suite can be run by invoking its `__call` metamethod.
