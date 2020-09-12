@@ -200,3 +200,7 @@ function ltdd.assertNotNil(actual)
 	ltdd.assertThat(actual, ltdd.isNotNil)
 end
 
+function ltdd.assertEqual(actual, value)
+	ltdd.assertThat(actual, ltdd.isEqualTo(value))
+end
+

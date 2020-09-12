@@ -134,4 +134,14 @@ function journey.assertNotNil_fails_on_nil(self)
 		end)
 end
 
+function journey.assertEqual_passes_on_eval_equal(self)
+	self.assertEqual(1, 1)
+end
+
+function journey.assertEqual_fails_on_eval_not_equal(self)
+	self.assertThrows(function()
+			self.assertEqual(1, 2)
+		end)
+end
+
 journey(...)
