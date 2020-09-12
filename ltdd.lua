@@ -237,3 +237,7 @@ function ltdd.assertType(actual, value)
 	ltdd.assertThat(actual, ltdd.isOfType(value))
 end
 
+function ltdd.assertTablesEqual(actual, value)
+	ltdd.assertThat(actual, ltdd.isEqualToTable(value))
+end
+

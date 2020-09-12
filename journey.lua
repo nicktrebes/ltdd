@@ -200,4 +200,20 @@ function journey.isEqualToTable_fails_on_superset(self)
 		end)
 end
 
+function journey.assertTablesEqual_passes_on_equal_tables(self)
+	self.assertTablesEqual({1, 2, 3}, {1, 2, 3})
+end
+
+function journey.assertTablesEqual_fails_on_subset(self)
+	self.assertThrows(function()
+			self.assertTablesEqual({1, 2}, {1, 2, 3})
+		end)
+end
+
+function journey.assertTablesEqual_fails_on_superset(self)
+	self.assertThrows(function()
+			self.assertTablesEqual({1, 2, 3, 4}, {1, 2, 3})
+		end)
+end
+
 journey(...)
