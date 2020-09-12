@@ -204,3 +204,7 @@ function ltdd.assertEqual(actual, value)
 	ltdd.assertThat(actual, ltdd.isEqualTo(value))
 end
 
+function ltdd.assertNotEqual(actual, value)
+	ltdd.assertThat(actual, ltdd.isNotEqualTo(value))
+end
+

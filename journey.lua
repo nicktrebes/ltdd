@@ -144,4 +144,14 @@ function journey.assertEqual_fails_on_eval_not_equal(self)
 		end)
 end
 
+function journey.assertNotEqual_passes_on_eval_not_equal(self)
+	self.assertNotEqual(1, 2)
+end
+
+function journey.assertNotEqual_fails_on_eval_equal(self)
+	self.assertThrows(function()
+			self.assertNotEqual(1, 1)
+		end)
+end
+
 journey(...)
