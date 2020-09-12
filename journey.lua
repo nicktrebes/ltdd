@@ -154,4 +154,14 @@ function journey.assertNotEqual_fails_on_eval_equal(self)
 		end)
 end
 
+function journey.assertGreaterThan_passes_on_eval_greater_than(self)
+	self.assertGreaterThan(2, 1)
+end
+
+function journey.assertGreaterThan_fails_on_eval_not_greater_than(self)
+	self.assertThrows(function()
+			self.assertGreaterThan(1, 1)
+		end)
+end
+
 journey(...)

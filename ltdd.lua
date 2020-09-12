@@ -208,3 +208,7 @@ function ltdd.assertNotEqual(actual, value)
 	ltdd.assertThat(actual, ltdd.isNotEqualTo(value))
 end
 
+function ltdd.assertGreaterThan(actual, value)
+	ltdd.assertThat(actual, ltdd.isGreaterThan(value))
+end
+
