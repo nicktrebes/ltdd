@@ -192,3 +192,7 @@ function ltdd.assertFalse(actual)
 	ltdd.assertThat(actual, ltdd.isFalse)
 end
 
+function ltdd.assertNil(actual)
+	ltdd.assertThat(actual, ltdd.isNil)
+end
+
