@@ -53,3 +53,10 @@ The arguments given to `mock(...)` are stored in the mock object's `calls` metav
 Its `__index` metavalue is `ltdd` and its `__newindex` metamethod adds tests to a table in its metatable.
 The test suite can be run by invoking its `__call` metamethod.
 If provided, string arguments to this function will be used to select specific tests to run instead of the whole suite.
+
+## User-defined Constraints
+
+A constraint without arguments is a function that returns an object with `__call` and `__tostring` metamethods.
+`ltdd.assertThat(actual, constraint)` calls the constraint function to get the object, uses the return value from `__call` to determine the assertion, and uses the return value from `__tostring` to build the error message if the assertion fails.
+
+A constraint that takes arguments is similar to a constraint without arguments, except that the constraint function returns a callable object/function. This callable object/function returns an object as described in the previous paragraph.
