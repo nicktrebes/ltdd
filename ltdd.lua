@@ -25,8 +25,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ]]--
 
-local args = {...}
-
 local function getDisplayString(value)
 	local str = tostring(value)
 	if type(value) == "string" then
@@ -184,5 +182,9 @@ function ltdd.isOfType(value)
 	return createConstraintWithVal('[of type] [', value, function(self, actual)
 			return type(actual) == getmetatable(self).value
 		end)
+end
+
+function ltdd.assertTrue(actual)
+	ltdd.assertThat(actual, ltdd.isTrue)
 end
 

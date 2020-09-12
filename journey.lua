@@ -94,4 +94,14 @@ function journey.isOfType_fails_on_incorrect_type_name(self)
 		end)
 end
 
+function journey.assertTrue_passes_on_eval_true(self)
+	self.assertTrue(true)
+end
+
+function journey.assertTrue_fails_on_eval_false(self)
+	self.assertThrows(function()
+			self.assertTrue(false)
+		end)
+end
+
 journey(...)
