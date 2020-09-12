@@ -124,4 +124,14 @@ function journey.assertNil_fails_on_not_nil(self)
 		end)
 end
 
+function journey.assertNotNil_passes_on_not_nil(self)
+	self.assertNotNil(false)
+end
+
+function journey.assertNotNil_fails_on_nil(self)
+	self.assertThrows(function()
+			self.assertNotNil(nil)
+		end)
+end
+
 journey(...)
